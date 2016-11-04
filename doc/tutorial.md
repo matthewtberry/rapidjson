@@ -1,6 +1,6 @@
 # Tutorial
 
-This tutorial introduces the basics of the Document Object Model(DOM) API.
+This tutorial introduces the basics of the Document Object Model (DOM) API.
 
 As shown in [Usage at a glance](@ref index), a JSON can be parsed into DOM, and then the DOM can be queried and modified easily, and finally be converted back to JSON.
 
@@ -38,7 +38,7 @@ Document document;
 document.Parse(json);
 ~~~~~~~~~~
 
-The JSON is now parsed into `document` as a *DOM tree*:
+The JSON is now parsed into `Document` as a *DOM tree*:
 
 ![DOM in the tutorial](diagram/tutorial.png)
 
@@ -68,7 +68,7 @@ printf("t = %s\n", document["t"].GetBool() ? "true" : "false");
 true
 ~~~~~~~~~~
 
-JSON null can be queryed by `IsNull()`.
+JSON null can be queryed with `IsNull()`.
 ~~~~~~~~~~cpp
 printf("n = %s\n", document["n"].IsNull() ? "null" : "?");
 ~~~~~~~~~~
@@ -113,13 +113,13 @@ a[2] = 3
 a[3] = 4
 ~~~~~~~~~~
 
-Note that, RapidJSON does not automatically convert values between JSON types. If a value is a string, it is invalid to call `GetInt()`, for example. In debug mode it will fail an assertion. In release mode, the behavior is undefined.
+Note that, RapidJSON does not automatically convert values between JSON types. If a value is a string, it is invalid to call `GetInt()`, for example. In debug mode this will fail an assertion. In release mode, the behavior is undefined.
 
 In the following, details about querying individual types are discussed.
 
 ## Query Array {#QueryArray}
 
-By default, `SizeType` is typedef of `unsigned`. In most systems, array is limited to store up to 2^32-1 elements.
+By default, `SizeType` is typedef of `unsigned`. In most systems, array is limited to store up to 2<sup>32</sup>-1 elements.
 
 You may access the elements in array by integer literal, for example, `a[0]`, `a[1]`, `a[2]`.
 
@@ -170,7 +170,7 @@ Type of member a is Array
 
 Note that, when `operator[](const char*)` cannot find the member, it will fail an assertion.
 
-If we are unsure whether a member exists, we need to call `HasMember()` before calling `operator[](const char*)`. However, this incurs two lookup. A better way is to call `FindMember()`, which can check the existence of member and obtain its value at once:
+If we are unsure whether a member exists, we need to call `HasMember()` before calling `operator[](const char*)`. However, this incurs two lookups. A better way is to call `FindMember()`, which can check the existence of member and obtain its value at once:
 
 ~~~~~~~~~~cpp
 Value::ConstMemberIterator itr = document.FindMember("hello");
@@ -190,11 +190,11 @@ for (auto& m : document.GetObject())
 
 ## Querying Number {#QueryNumber}
 
-JSON provide a single numerical type called Number. Number can be integer or real numbers. RFC 4627 says the range of Number is specified by parser.
+JSON provide a single numerical type called `Number`. `Number` can be integer or real numbers. RFC 4627 says the range of `Number` is specified by parser.
 
 As C++ provides several integer and floating point number types, the DOM tries to handle these with widest possible range and good performance.
 
-When a Number is parsed, it is stored in the DOM as either one of the following type:
+When a `Number` is parsed, it is stored in the DOM as either one of the following type:
 
 Type       | Description
 -----------|---------------------------------------
@@ -236,7 +236,7 @@ The correct length of the value `"a\u0000b"` is 3. But `strlen()` returns 1.
 
 `GetStringLength()` can also improve performance, as user may often need to call `strlen()` for allocating buffer.
 
-Besides, `std::string` also support a constructor:
+Besides, `std::string` also supports a constructor:
 
 ~~~~~~~~~~cpp
 string(const char* s, size_t count);
