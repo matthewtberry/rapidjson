@@ -294,7 +294,7 @@ Value a(kArrayType);
 
 ## Move Semantics {#MoveSemantics}
 
-A very special decision during design of RapidJSON is that, assignment of value does not copy the source value to destination value. Instead, the value from source is moved to the destination. For example,
+A very special design decision of RapidJSON is that, assignment of value does not copy the source value to destination value. Instead, the value from source is moved to the destination. For example,
 
 ~~~~~~~~~~cpp
 Value a(123);
@@ -324,11 +324,11 @@ Value o(kObjectType);
 
 ![Copy semantics makes a lots of copy operations.](diagram/move2.png)
 
-The object `o` needs to allocate a buffer of same size as contacts, makes a deep clone of it, and then finally contacts is destructed. This will incur a lot of unnecessary allocations/deallocations and memory copying.
+The object `o` needs to allocate a buffer of same size as `contacts`, makes a deep clone of it, and then finally `contacts` is destructed. This will incur a lot of unnecessary allocations/deallocations and memory copying.
 
-There are solutions to prevent actual copying these data, such as reference counting and garbage collection(GC).
+There are solutions to prevent actual copying these data, such as reference counting and garbage collection (GC).
 
-To make RapidJSON simple and fast, we chose to use *move* semantics for assignment. It is similar to `std::auto_ptr` which transfer ownership during assignment. Move is much faster and simpler, it just destructs the original value, `memcpy()` the source to destination, and finally sets the source as Null type.
+To make RapidJSON simple and fast, we chose to use *move* semantics for assignment. It is similar to `std::auto_ptr` which transfers ownership during assignment. Move is much faster and simpler, it just destructs the original value, `memcpy()` the source to destination, and finally sets the source as Null type.
 
 So, with move semantics, the above example becomes:
 
@@ -349,7 +349,7 @@ This is called move assignment operator in C++11. As RapidJSON supports C++03, i
 
 ### Move semantics and temporary values {#TemporaryValues}
 
-Sometimes, it is convenient to construct a Value in place, before passing it to one of the "moving" functions, like `PushBack()` or `AddMember()`.  As temporary objects can't be converted to proper Value references, the convenience function `Move()` is available:
+Sometimes, it is convenient to construct a `Value` in place, before passing it to one of the "moving" functions, like `PushBack()` or `AddMember()`.  As temporary objects can't be converted to proper Value references, the convenience function `Move()` is available:
 
 ~~~~~~~~~~cpp
 Value a(kArrayType);
@@ -360,12 +360,12 @@ a.PushBack(Value(42).Move(), allocator);   // same as above
 ~~~~~~~~~~
 
 ## Create String {#CreateString}
-RapidJSON provide two strategies for storing string.
+RapidJSON provides two strategies for storing a string.
 
-1. copy-string: allocates a buffer, and then copy the source data into it.
-2. const-string: simply store a pointer of string.
+1. copy-string: allocate a buffer, and then copy the source data into it.
+2. const-string: simply store a pointer to source string.
 
-Copy-string is always safe because it owns a copy of the data. Const-string can be used for storing string literal, and in-situ parsing which we will mentioned in Document section.
+Copy-string is always safe because it owns a copy of the data. Const-string can be used for storing string literal, and in-situ parsing which we mention in [Document](doc/dom.md #InSituParsing) section.
 
 To make memory allocation customizable, RapidJSON requires user to pass an instance of allocator, whenever an operation may require allocation. This design is needed to prevent storing a allocator (or Document) pointer per Value.
 
